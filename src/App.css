@@ -1,0 +1,65 @@
+@import "@fontsource-variable/noto-serif";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+  font-family: "Noto Serif Variable", serif;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+  font-family: "Poppins", sans-serif;
+}
+
+button {
+  transition: all 0.3s;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Tiny scrollbar for Chrome, Safari and Opera */
+.tiny-scrollbar::-webkit-scrollbar {
+  width: 0.5em;
+  opacity: 0;
+}
+
+/* Firefox */
+.tiny-scrollbar {
+  scrollbar-width: 0.5em;
+}
+
+.tiny-scrollbar::-webkit-scrollbar-track {
+  background-color: #c1aca5;
+  opacity: 0;
+}
+
+.tiny-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #f7f6f6;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
