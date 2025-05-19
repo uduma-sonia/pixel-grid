@@ -13,7 +13,6 @@ export default function GridItem({
 }) {
   return (
     <div
-      key={`${rowIndex}-${colIndex}`}
       className="border-[0.4px] border-[#000] flex items-center justify-center text-xs"
       onClick={() => handleCellClick(rowIndex, colIndex)}
       style={{
@@ -21,9 +20,8 @@ export default function GridItem({
         height: `${gridSize}px`,
         backgroundColor: color,
         cursor: "pointer",
+        boxSizing: "border-box",
       }}
-    >
-      {colIndex + 1 + rowIndex}
-    </div>
+    ></div>
   );
 }

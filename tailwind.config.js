@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        //   "light-grey": "#9FA3A9",
+        "brand-color": "#4b6e01",
       },
       fontFamily: {
         noto: ["'Noto Serif Variable', serif"],

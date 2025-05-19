@@ -10,13 +10,17 @@ import {
   COLS_KEY,
   GRID_KEY,
   GRID_SETTINGS_KEY,
+  SHOW_GRID_NUM_KEY,
 } from "../lib/constants";
 import GridItem from "../components/GridItem";
+import GridTopMarker from "../components/GridTopMarker";
+import GridLeftMarker from "../components/GridLeftMarker";
 
 type Grid = string[][];
 
 export default function Home() {
   const gridRef = useRef(null);
+  const fileTitle = "Powerpuff girls pixel art";
 
   const [gridSize, setGridSize] = useState(() => {
     return Helpers.getSettingFromLocalStorage(GRID_SIZE_KEY) || defaultGridSize;
@@ -32,6 +36,14 @@ export default function Home() {
     return saved ?? Helpers.createEmptyGrid(defaultGridNum, defaultGridNum);
   });
   const [selectedColor, setSelectedColor] = useState<string>("#000000");
+  const [gridNumber, setGridNumber] = useState({
+    rows: Helpers.getSettingFromLocalStorage(ROWS_KEY) || defaultGridNum,
+    cols: Helpers.getSettingFromLocalStorage(COLS_KEY) || defaultGridNum,
+  });
+
+  const [showGridNum, setShowGridNum] = useState(
+    Helpers.getSettingFromLocalStorage(SHOW_GRID_NUM_KEY) || false
+  );
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
     const newGrid = [...grid.map((row) => [...row])];
@@ -44,7 +56,7 @@ export default function Home() {
     if (gridRef.current) {
       const canvas = await html2canvas(gridRef.current);
       const link = document.createElement("a");
-      link.download = "pixel-art.png";
+      link.download = `${fileTitle}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     }
@@ -65,6 +77,10 @@ export default function Home() {
     }
 
     setGrid(newGrid);
+    setGridNumber({
+      rows: rows,
+      cols: cols,
+    });
     Helpers.saveToLocalStorage(GRID_KEY, newGrid);
     Helpers.updateSettingsInLocalStorage(GRID_SETTINGS_KEY, COLS_KEY, cols);
     Helpers.updateSettingsInLocalStorage(GRID_SETTINGS_KEY, ROWS_KEY, rows);
@@ -78,15 +94,29 @@ export default function Home() {
     setRows(defaultGridNum);
     setCols(defaultGridNum);
     setSelectedColor("#000000");
+
     setGrid(() => {
       return Helpers.createEmptyGrid(defaultGridNum, defaultGridNum);
     });
+    setGridNumber({
+      rows: Helpers.getSettingFromLocalStorage(ROWS_KEY) || defaultGridNum,
+      cols: Helpers.getSettingFromLocalStorage(COLS_KEY) || defaultGridNum,
+    });
+  };
+
+  const handleShowGrid = () => {
+    setShowGridNum(!showGridNum);
+    Helpers.updateSettingsInLocalStorage(
+      GRID_SETTINGS_KEY,
+      SHOW_GRID_NUM_KEY,
+      !showGridNum
+    );
   };
 
   return (
     <div>
       <ToolBar
-        title="Powerpuff girls pixel art"
+        title={fileTitle}
         selectedColor={selectedColor}
         setSelectedColor={setSelectedColor}
         rows={rows}
@@ -98,13 +128,17 @@ export default function Home() {
         resetGrid={resetGrid}
         setGridSize={setGridSize}
         gridSize={gridSize}
+        showGridNum={showGridNum}
+        handleShowGrid={handleShowGrid}
       />
 
-      <div className="bg-white p-3 overflow-x-auto">
-        {grid.length > 0 && (
+      <div className="bg-white p-1 md:p-3 overflow-x-auto">
+        {grid?.length > 0 && (
           <div
             ref={gridRef}
-            className="grid gap-0 w-fit overflow-x-auto mx-auto"
+            className={`grid gap-0 w-fit overflow-x-auto mx-auto relative ${
+              showGridNum ? "pl-9 pt-9" : "pl-3 pt-3"
+            } `}
             style={{
               gridTemplateColumns: `repeat(${
                 grid[0]?.length || 0
@@ -112,9 +146,20 @@ export default function Home() {
               background: "#ffffff",
             }}
           >
+            {showGridNum && (
+              <>
+                <GridTopMarker arrayNum={gridNumber.cols} gridSize={gridSize} />
+                <GridLeftMarker
+                  arrayNum={gridNumber.rows}
+                  gridSize={gridSize}
+                />
+              </>
+            )}
+
             {grid.map((row, rowIndex) =>
               row.map((color, colIndex) => (
                 <GridItem
+                  key={`${rowIndex}-${colIndex}`}
                   rowIndex={rowIndex}
                   colIndex={colIndex}
                   gridSize={gridSize}

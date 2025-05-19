@@ -13,12 +13,14 @@ type ToolBarProps = {
   setRows: (value: number) => void;
   cols: number;
   setCols: (value: number) => void;
+  handleShowGrid: () => void;
   setGridSize: (value: number) => void;
   gridSize: number;
   createGrid: () => void;
   downloadArt: () => void;
   resetGrid: () => void;
   title: string;
+  showGridNum: boolean;
 };
 
 export default function ToolBar({
@@ -34,6 +36,8 @@ export default function ToolBar({
   setGridSize,
   gridSize,
   resetGrid,
+  showGridNum,
+  handleShowGrid,
 }: ToolBarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef: any = useRef(null);
@@ -94,7 +98,7 @@ export default function ToolBar({
               </div>
 
               <button
-                className="text-white px-3 py-2 w-full rounded-lg text-sm flex items-center gap-1 bg-[#4b6e01]"
+                className="text-white px-3 py-2 w-full rounded-lg text-sm flex items-center gap-1 bg-brand-color"
                 onClick={createGrid}
               >
                 Generate grid
@@ -113,9 +117,21 @@ export default function ToolBar({
               />
             </div>
 
+            <div className="checkbox-container px-4 pt-4">
+              <input
+                type="checkbox"
+                id="html"
+                checked={showGridNum}
+                onChange={handleShowGrid}
+              />
+              <label htmlFor="html" className="text-sm font-medium">
+                Show grid number
+              </label>
+            </div>
+
             <div className="flex mt-10 gap-3 px-4">
               <button
-                className="text-white px-3 py-2 rounded-lg text-sm w-full flex justify-center items-center gap-1 bg-[#4b6e01]"
+                className="text-white px-3 py-2 rounded-lg text-sm w-full flex justify-center items-center gap-1 bg-brand-color"
                 onClick={resetGrid}
               >
                 Reset
@@ -123,7 +139,7 @@ export default function ToolBar({
               </button>
 
               <button
-                className="text-white px-3 py-2 rounded-lg text-sm w-full flex justify-center items-center gap-1 bg-[#4b6e01]"
+                className="text-white px-3 py-2 rounded-lg text-sm w-full flex justify-center items-center gap-1 bg-brand-color"
                 onClick={downloadArt}
               >
                 Save
