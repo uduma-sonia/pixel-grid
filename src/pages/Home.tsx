@@ -11,6 +11,7 @@ import {
   GRID_KEY,
   GRID_SETTINGS_KEY,
 } from "../lib/constants";
+import GridItem from "../components/GridItem";
 
 type Grid = string[][];
 
@@ -113,19 +114,13 @@ export default function Home() {
           >
             {grid.map((row, rowIndex) =>
               row.map((color, colIndex) => (
-                <div
-                  key={`${rowIndex}-${colIndex}`}
-                  className="border-[0.4px] border-[#000]"
-                  onClick={() => handleCellClick(rowIndex, colIndex)}
-                  style={{
-                    width: `${gridSize}px`,
-                    height: `${gridSize}px`,
-                    backgroundColor: color,
-                    cursor: "pointer",
-                  }}
-                >
-                  {colIndex + 1 + rowIndex}
-                </div>
+                <GridItem
+                  rowIndex={rowIndex}
+                  colIndex={colIndex}
+                  gridSize={gridSize}
+                  color={color}
+                  handleCellClick={handleCellClick}
+                />
               ))
             )}
           </div>
