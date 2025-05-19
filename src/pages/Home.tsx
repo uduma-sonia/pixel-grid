@@ -1,18 +1,27 @@
 import html2canvas from "html2canvas";
 import { useState, useRef } from "react";
-import TitleBar from "../components/TitleBar";
+import ToolBar from "../components/ToolBar";
 import Helpers from "../lib/Helpers";
 
 type Grid = string[][];
 
 const GRID_KEY = "pixel-art-grid";
+// Convert to a single object settings
 const COLS_KEY = "pixel-art-grid-cols";
 const ROWS_KEY = "pixel-art-grid-rows";
+// const GRID_SIZE = "pixel-art-grid-size";
 const defaultGridNum = 10;
+// const gridSettings = {
+//   rows: 0,
+//   cols: 0,
+//   color: 0,
+//   size: 0
+// }
 
 export default function Home() {
   const gridRef = useRef(null);
 
+  const [gridSize, setGridSize] = useState(50);
   const [rows, setRows] = useState<any>(() => {
     return Helpers.loadDataFromLocalStorage(ROWS_KEY) || defaultGridNum;
   });
@@ -77,7 +86,7 @@ export default function Home() {
 
   return (
     <div>
-      <TitleBar
+      <ToolBar
         title="Powerpuff girls pixel art"
         selectedColor={selectedColor}
         setSelectedColor={setSelectedColor}
@@ -88,10 +97,12 @@ export default function Home() {
         createGrid={createGrid}
         downloadArt={downloadArt}
         resetGrid={resetGrid}
+        setGridSize={setGridSize}
+        gridSize={gridSize}
       />
 
       <div
-        className="bg-white p-2"
+        className="bg-white p-3"
         style={{
           minHeight: "calc(100vh - 64px)",
         }}
@@ -101,7 +112,9 @@ export default function Home() {
             ref={gridRef}
             className="grid gap-0 w-fit overflow-x-auto"
             style={{
-              gridTemplateColumns: `repeat(${grid[0]?.length || 0}, 50px)`,
+              gridTemplateColumns: `repeat(${
+                grid[0]?.length || 0
+              }, ${gridSize}px)`,
               background: "#ffffff",
             }}
           >
@@ -112,8 +125,8 @@ export default function Home() {
                   className="border-[0.4px] border-[#444]"
                   onClick={() => handleCellClick(rowIndex, colIndex)}
                   style={{
-                    width: "50px",
-                    height: "50px",
+                    width: `${gridSize}px`,
+                    height: `${gridSize}px`,
                     backgroundColor: color,
                     cursor: "pointer",
                   }}
