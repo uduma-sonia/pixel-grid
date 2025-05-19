@@ -11,17 +11,11 @@ const COLS_KEY = "pixel-art-grid-cols";
 const ROWS_KEY = "pixel-art-grid-rows";
 // const GRID_SIZE = "pixel-art-grid-size";
 const defaultGridNum = 10;
-// const gridSettings = {
-//   rows: 0,
-//   cols: 0,
-//   color: 0,
-//   size: 0
-// }
 
 export default function Home() {
   const gridRef = useRef(null);
 
-  const [gridSize, setGridSize] = useState(50);
+  const [gridSize, setGridSize] = useState(70);
   const [rows, setRows] = useState<any>(() => {
     return Helpers.loadDataFromLocalStorage(ROWS_KEY) || defaultGridNum;
   });
@@ -101,16 +95,11 @@ export default function Home() {
         gridSize={gridSize}
       />
 
-      <div
-        className="bg-white p-3"
-        style={{
-          minHeight: "calc(100vh - 64px)",
-        }}
-      >
+      <div className="bg-white p-3 overflow-x-auto">
         {grid.length > 0 && (
           <div
             ref={gridRef}
-            className="grid gap-0 w-fit overflow-x-auto"
+            className="grid gap-0 w-fit overflow-x-auto mx-auto"
             style={{
               gridTemplateColumns: `repeat(${
                 grid[0]?.length || 0
@@ -122,7 +111,7 @@ export default function Home() {
               row.map((color, colIndex) => (
                 <div
                   key={`${rowIndex}-${colIndex}`}
-                  className="border-[0.4px] border-[#444]"
+                  className="border-[0.4px] border-[#000]"
                   onClick={() => handleCellClick(rowIndex, colIndex)}
                   style={{
                     width: `${gridSize}px`,
@@ -139,3 +128,14 @@ export default function Home() {
     </div>
   );
 }
+
+// const gridSettings = {
+//   rows: 0,
+//   cols: 0,
+//   color: 0,
+//   size: 0
+// }
+// 1. show grid number
+// 2. Eraser
+// 3. Undo
+// 4. Improve color picker (save picked colors)
