@@ -1,8 +1,12 @@
+import { useEffect } from "react";
+import debounce from "lodash.debounce";
+
 type BasicInputProps = {
   label: string;
   id?: string;
   value: number | string;
   onChange: (value: any) => void;
+  onDebouncedChange?: (value: any) => void; // debounced side-effect
   className?: string;
   type?: string;
   inputMode?:
@@ -15,6 +19,7 @@ type BasicInputProps = {
     | "none"
     | "decimal"
     | undefined;
+  max?: number;
 };
 
 export default function BasicInput({
@@ -22,11 +27,39 @@ export default function BasicInput({
   id,
   value,
   onChange,
+  onDebouncedChange,
   className = "",
   type = "number",
   inputMode = "numeric",
+  max = 1000,
 }: BasicInputProps) {
   const inputId = id ?? label.toLowerCase();
+
+  // Debounce side effect when value changes
+  useEffect(() => {
+    if (!onDebouncedChange) return;
+
+    const debounced = debounce(() => {
+      onDebouncedChange(value);
+    }, 1000);
+
+    debounced();
+
+    return () => {
+      debounced.cancel();
+    };
+  }, [value, onDebouncedChange]);
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue =
+      type === "number" ? Number(e.target.value) : e.target.value;
+
+    if (rawValue === max) {
+      console.log("over the max");
+    }
+
+    onChange(rawValue);
+  };
 
   return (
     <div className="flex flex-col items-start gap-1">
@@ -38,13 +71,7 @@ export default function BasicInput({
         type={type}
         inputMode={inputMode}
         value={value}
-        onChange={(e) => {
-          if (type === "number") {
-            onChange(Number(e.target.value));
-          } else {
-            onChange(e.target.value);
-          }
-        }}
+        onChange={handleInput}
         className={`border border-[#9198a0] rounded-md p-1 w-full shadow-sm h-9 text-sm ${className}`}
       />
     </div>

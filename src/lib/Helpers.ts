@@ -1,3 +1,9 @@
+import { GRID_SETTINGS_KEY } from "./constants";
+
+type Settings = {
+  [key: string]: any;
+};
+
 class Helpers {
   static createEmptyGrid(
     rows: number,
@@ -21,6 +27,41 @@ class Helpers {
       }
     }
     return null;
+  }
+
+  static updateSettingsInLocalStorage(
+    storeKey: string,
+    settingsKey: string,
+    value: any
+  ) {
+    try {
+      const existing = localStorage.getItem(storeKey);
+      let settings: Settings = {};
+
+      if (existing) {
+        settings = JSON.parse(existing);
+      }
+
+      settings[settingsKey] = value;
+      this.saveToLocalStorage(storeKey, settings);
+    } catch (error) {
+      console.error("Failed to update localStorage settings:", error);
+    }
+  }
+
+  static getSettingFromLocalStorage(settingsKey: string): any | null {
+    const storeKey = GRID_SETTINGS_KEY;
+    try {
+      const existing = localStorage.getItem(storeKey);
+
+      if (!existing) return null;
+
+      const settings = JSON.parse(existing);
+      return settings[settingsKey] ?? null;
+    } catch (error) {
+      console.error("Failed to get value from localStorage:", error);
+      return null;
+    }
   }
 
   static getAvatarSets() {

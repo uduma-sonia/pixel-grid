@@ -43,3 +43,7 @@ button {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+hr {
+  border-color: #bbb9b9;
+}

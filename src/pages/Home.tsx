@@ -2,25 +2,29 @@ import html2canvas from "html2canvas";
 import { useState, useRef } from "react";
 import ToolBar from "../components/ToolBar";
 import Helpers from "../lib/Helpers";
+import {
+  GRID_SIZE_KEY,
+  defaultGridSize,
+  ROWS_KEY,
+  defaultGridNum,
+  COLS_KEY,
+  GRID_KEY,
+  GRID_SETTINGS_KEY,
+} from "../lib/constants";
 
 type Grid = string[][];
-
-const GRID_KEY = "pixel-art-grid";
-// Convert to a single object settings
-const COLS_KEY = "pixel-art-grid-cols";
-const ROWS_KEY = "pixel-art-grid-rows";
-// const GRID_SIZE = "pixel-art-grid-size";
-const defaultGridNum = 10;
 
 export default function Home() {
   const gridRef = useRef(null);
 
-  const [gridSize, setGridSize] = useState(50);
+  const [gridSize, setGridSize] = useState(() => {
+    return Helpers.getSettingFromLocalStorage(GRID_SIZE_KEY) || defaultGridSize;
+  });
   const [rows, setRows] = useState<any>(() => {
-    return Helpers.loadDataFromLocalStorage(ROWS_KEY) || defaultGridNum;
+    return Helpers.getSettingFromLocalStorage(ROWS_KEY) || defaultGridNum;
   });
   const [cols, setCols] = useState<any>(() => {
-    return Helpers.loadDataFromLocalStorage(COLS_KEY) || defaultGridNum;
+    return Helpers.getSettingFromLocalStorage(COLS_KEY) || defaultGridNum;
   });
   const [grid, setGrid] = useState<Grid>(() => {
     const saved = Helpers.loadDataFromLocalStorage(GRID_KEY);
@@ -61,15 +65,15 @@ export default function Home() {
 
     setGrid(newGrid);
     Helpers.saveToLocalStorage(GRID_KEY, newGrid);
-    Helpers.saveToLocalStorage(COLS_KEY, cols);
-    Helpers.saveToLocalStorage(ROWS_KEY, rows);
+    Helpers.updateSettingsInLocalStorage(GRID_SETTINGS_KEY, COLS_KEY, cols);
+    Helpers.updateSettingsInLocalStorage(GRID_SETTINGS_KEY, ROWS_KEY, rows);
   };
 
   const resetGrid = () => {
     localStorage.removeItem(GRID_KEY);
-    localStorage.removeItem(COLS_KEY);
-    localStorage.removeItem(ROWS_KEY);
+    localStorage.removeItem(GRID_SETTINGS_KEY);
 
+    setGridSize(defaultGridSize);
     setRows(defaultGridNum);
     setCols(defaultGridNum);
     setSelectedColor("#000000");
@@ -119,7 +123,9 @@ export default function Home() {
                     backgroundColor: color,
                     cursor: "pointer",
                   }}
-                ></div>
+                >
+                  {colIndex + 1 + rowIndex}
+                </div>
               ))
             )}
           </div>
@@ -129,12 +135,6 @@ export default function Home() {
   );
 }
 
-// const gridSettings = {
-//   rows: 0,
-//   cols: 0,
-//   color: 0,
-//   size: 0
-// }
 // 1. show grid number
 // 2. Eraser
 // 3. Undo

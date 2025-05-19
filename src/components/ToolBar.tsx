@@ -3,6 +3,8 @@ import { GrPowerReset } from "react-icons/gr";
 import BasicInput from "./BasicInput";
 import { LuSettings2 } from "react-icons/lu";
 import { useState, useRef, useEffect } from "react";
+import Helpers from "../lib/Helpers";
+import { GRID_SETTINGS_KEY, GRID_SIZE_KEY } from "../lib/constants";
 
 type ToolBarProps = {
   selectedColor: string;
@@ -51,7 +53,7 @@ export default function ToolBar({
   }, []);
 
   return (
-    <div className="flex shadow-lg mb-0.5 h-16 rounded-b-lg items-center justify-between px-4 sticky top-0 bg-white z-20">
+    <div className="flex shadow-lg mb-0.5 h-16 rounded-b-xl items-center justify-between px-4 sticky top-0 bg-white z-20">
       <div>
         <p className="font-medium text-sm md:text-lg">{title}</p>
       </div>
@@ -67,23 +69,41 @@ export default function ToolBar({
         {isOpen && (
           <div
             ref={menuRef}
-            className="absolute top-[50px] -right-3 bg-white border z-50 shadow-lg w-[300px] px-4 py-5"
+            className="absolute top-[50px] -right-3 bg-white rounded-xl border z-50 shadow-lg w-[300px] px- py-5"
           >
-            <BasicInput label="Size" value={gridSize} onChange={setGridSize} />
-
-            <div className="flex mt-4 mb-2 gap-3">
-              <BasicInput label="Rows" value={rows} onChange={setRows} />
-              <BasicInput label="Cols" value={cols} onChange={setCols} />
+            <div className="px-4 mb-3">
+              <BasicInput
+                label="Size"
+                value={gridSize}
+                onChange={setGridSize}
+                onDebouncedChange={(val) => {
+                  Helpers.updateSettingsInLocalStorage(
+                    GRID_SETTINGS_KEY,
+                    GRID_SIZE_KEY,
+                    val
+                  );
+                }}
+              />
             </div>
 
-            <button
-              className="text-white px-3 py-2 w-full rounded-lg text-sm flex items-center gap-1 bg-[#4b6e01]"
-              onClick={createGrid}
-            >
-              Generate grid
-            </button>
+            <hr />
+            <div className="my-3 px-4">
+              <div className="flex gap-3 mb-2">
+                <BasicInput label="Rows" value={rows} onChange={setRows} />
+                <BasicInput label="Cols" value={cols} onChange={setCols} />
+              </div>
 
-            <div className="mt-4">
+              <button
+                className="text-white px-3 py-2 w-full rounded-lg text-sm flex items-center gap-1 bg-[#4b6e01]"
+                onClick={createGrid}
+              >
+                Generate grid
+              </button>
+            </div>
+
+            <hr />
+
+            <div className="mt-4 px-4">
               <BasicInput
                 label="Color"
                 type="color"
@@ -93,7 +113,7 @@ export default function ToolBar({
               />
             </div>
 
-            <div className="flex mt-6 gap-3">
+            <div className="flex mt-10 gap-3 px-4">
               <button
                 className="text-white px-3 py-2 rounded-lg text-sm w-full flex justify-center items-center gap-1 bg-[#4b6e01]"
                 onClick={resetGrid}
