@@ -1,4 +1,18 @@
 import { AiFillSave } from "react-icons/ai";
+import { GrPowerReset } from "react-icons/gr";
+
+type TitleBarProps = {
+  selectedColor: string;
+  setSelectedColor: (color: string) => void;
+  rows: number;
+  setRows: (value: number) => void;
+  cols: number;
+  setCols: (value: number) => void;
+  createGrid: () => void;
+  downloadArt: () => void;
+  resetGrid: () => void;
+  title: string;
+};
 
 export default function TitleBar({
   selectedColor,
@@ -10,7 +24,8 @@ export default function TitleBar({
   createGrid,
   downloadArt,
   title,
-}: any) {
+  resetGrid,
+}: TitleBarProps) {
   return (
     <div className="flex shadow-2xl mb-0.5 h-16 rounded-b-lg items-center justify-between px-4">
       <div>
@@ -62,6 +77,13 @@ export default function TitleBar({
         >
           Save
           <AiFillSave fontSize="18px" />
+        </button>
+        <button
+          className="text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 bg-[#4b6e01]"
+          onClick={resetGrid}
+        >
+          Clear
+          <GrPowerReset fontSize="18px" />
         </button>
       </div>
     </div>

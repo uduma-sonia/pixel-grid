@@ -1,50 +1,27 @@
 import html2canvas from "html2canvas";
 import { useState, useRef } from "react";
 import TitleBar from "../components/TitleBar";
+import Helpers from "../lib/Helpers";
 
 type Grid = string[][];
-
-const createEmptyGrid = (
-  rows: number,
-  cols: number,
-  color: string = "#FFFFFF"
-): Grid => {
-  return Array.from({ length: rows }, () => Array(cols).fill(color));
-};
 
 const GRID_KEY = "pixel-art-grid";
 const COLS_KEY = "pixel-art-grid-cols";
 const ROWS_KEY = "pixel-art-grid-rows";
-
-const saveToLocalStorage = (key: string, value: any) => {
-  localStorage.setItem(key, JSON.stringify(value));
-};
-
-const loadDataFromLocalStorage = (key: string) => {
-  const data = localStorage.getItem(key);
-  if (data) {
-    try {
-      return JSON.parse(data);
-    } catch {
-      return null;
-    }
-  }
-  return null;
-};
+const defaultGridNum = 10;
 
 export default function Home() {
-  const defaultGridNum = 10;
   const gridRef = useRef(null);
 
   const [rows, setRows] = useState<any>(() => {
-    return loadDataFromLocalStorage(ROWS_KEY) || defaultGridNum;
+    return Helpers.loadDataFromLocalStorage(ROWS_KEY) || defaultGridNum;
   });
   const [cols, setCols] = useState<any>(() => {
-    return loadDataFromLocalStorage(COLS_KEY) || defaultGridNum;
+    return Helpers.loadDataFromLocalStorage(COLS_KEY) || defaultGridNum;
   });
   const [grid, setGrid] = useState<Grid>(() => {
-    const saved = loadDataFromLocalStorage(GRID_KEY);
-    return saved ?? createEmptyGrid(defaultGridNum, defaultGridNum);
+    const saved = Helpers.loadDataFromLocalStorage(GRID_KEY);
+    return saved ?? Helpers.createEmptyGrid(defaultGridNum, defaultGridNum);
   });
   const [selectedColor, setSelectedColor] = useState<string>("#000000");
 
@@ -52,7 +29,7 @@ export default function Home() {
     const newGrid = [...grid.map((row) => [...row])];
     newGrid[rowIndex][colIndex] = selectedColor;
     setGrid(newGrid);
-    saveToLocalStorage(GRID_KEY, newGrid);
+    Helpers.saveToLocalStorage(GRID_KEY, newGrid);
   };
 
   const downloadArt = async () => {
@@ -80,9 +57,22 @@ export default function Home() {
     }
 
     setGrid(newGrid);
-    saveToLocalStorage(GRID_KEY, newGrid);
-    saveToLocalStorage(COLS_KEY, cols);
-    saveToLocalStorage(ROWS_KEY, rows);
+    Helpers.saveToLocalStorage(GRID_KEY, newGrid);
+    Helpers.saveToLocalStorage(COLS_KEY, cols);
+    Helpers.saveToLocalStorage(ROWS_KEY, rows);
+  };
+
+  const resetGrid = () => {
+    localStorage.removeItem(GRID_KEY);
+    localStorage.removeItem(COLS_KEY);
+    localStorage.removeItem(ROWS_KEY);
+
+    setRows(defaultGridNum);
+    setCols(defaultGridNum);
+    setSelectedColor("#000000");
+    setGrid(() => {
+      return Helpers.createEmptyGrid(defaultGridNum, defaultGridNum);
+    });
   };
 
   return (
@@ -97,10 +87,11 @@ export default function Home() {
         setCols={setCols}
         createGrid={createGrid}
         downloadArt={downloadArt}
+        resetGrid={resetGrid}
       />
 
       <div
-        className="bg-red-500"
+        className="bg-white p-2"
         style={{
           minHeight: "calc(100vh - 64px)",
         }}
@@ -108,18 +99,17 @@ export default function Home() {
         {grid.length > 0 && (
           <div
             ref={gridRef}
+            className="grid gap-0 w-fit overflow-x-auto"
             style={{
-              display: "grid",
               gridTemplateColumns: `repeat(${grid[0]?.length || 0}, 50px)`,
-              gap: "1px",
-              background: "#ccc",
-              justifyContent: "center",
+              background: "#ffffff",
             }}
           >
             {grid.map((row, rowIndex) =>
               row.map((color, colIndex) => (
                 <div
                   key={`${rowIndex}-${colIndex}`}
+                  className="border-[0.4px] border-[#444]"
                   onClick={() => handleCellClick(rowIndex, colIndex)}
                   style={{
                     width: "50px",
@@ -127,7 +117,7 @@ export default function Home() {
                     backgroundColor: color,
                     cursor: "pointer",
                   }}
-                />
+                ></div>
               ))
             )}
           </div>
