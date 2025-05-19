@@ -29,9 +29,9 @@ export default function BasicInput({
   const inputId = id ?? label.toLowerCase();
 
   return (
-    <div className="flex items-center gap-1">
-      <label htmlFor={inputId} className="text-sm">
-        {label}:
+    <div className="flex flex-col items-start gap-1">
+      <label htmlFor={inputId} className="text-sm font-medium">
+        {label}
       </label>
       <input
         id={inputId}
@@ -45,7 +45,7 @@ export default function BasicInput({
             onChange(e.target.value);
           }
         }}
-        className={`border border-black rounded-md p-1 w-14 h-7 text-sm ${className}`}
+        className={`border border-[#9198a0] rounded-md p-1 w-full shadow-sm h-9 text-sm ${className}`}
       />
     </div>
   );

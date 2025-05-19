@@ -22,6 +22,48 @@ class Helpers {
     }
     return null;
   }
+
+  static getAvatarSets() {
+    const avatarSets = [
+      {
+        id: "set1",
+      },
+      {
+        id: "set1",
+      },
+      {
+        id: "set2",
+      },
+      {
+        id: "set2",
+      },
+      {
+        id: "set3",
+      },
+      {
+        id: "set3",
+      },
+      {
+        id: "set4",
+      },
+      {
+        id: "set4",
+      },
+      {
+        id: "set5",
+      },
+      {
+        id: "set5",
+      },
+    ];
+
+    return avatarSets;
+  }
+
+  // const getAvatars = getAvatarSets().map((item) => {
+  //   const randomNumbers = HelperUtils.generateRandomNumber(5);
+  //   return `https://robohash.org/${randomNumbers}?set=${item.id}&size=200x200`;
+  // });
 }
 
 export default Helpers;

@@ -15,7 +15,7 @@ const defaultGridNum = 10;
 export default function Home() {
   const gridRef = useRef(null);
 
-  const [gridSize, setGridSize] = useState(70);
+  const [gridSize, setGridSize] = useState(50);
   const [rows, setRows] = useState<any>(() => {
     return Helpers.loadDataFromLocalStorage(ROWS_KEY) || defaultGridNum;
   });
