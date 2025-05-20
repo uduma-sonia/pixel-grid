@@ -5,12 +5,8 @@ type Settings = {
 };
 
 class Helpers {
-  static createEmptyGrid(
-    rows: number,
-    cols: number,
-    color: string = "#FFFFFF"
-  ) {
-    return Array.from({ length: rows }, () => Array(cols).fill(color));
+  static createEmptyGrid(rows: number, cols: number) {
+    return Array.from({ length: rows }, () => Array(cols).fill("transparent"));
   }
 
   static saveToLocalStorage(key: string, value: any) {

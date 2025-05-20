@@ -14,18 +14,23 @@ import {
   FILL_MODE,
   PIXEL_NAME_KEY,
   SELECTED_COLOR_KEY,
+  ERASER_MODE,
+  BASE_COLOR_KEY,
 } from "../lib/constants";
 import GridItem from "../components/GridItem";
 import GridTopMarker from "../components/GridTopMarker";
 import GridLeftMarker from "../components/GridLeftMarker";
+import { Mode } from "../types/toolbar";
 
 type Grid = string[][];
 
 export default function Home() {
   const gridRef = useRef(null);
-  const baseColor = "#ffffff";
-
-  const [mode, setMode] = useState(FILL_MODE);
+  const _baseColor =
+    Helpers.getSettingFromLocalStorage(BASE_COLOR_KEY) || "#ffffff";
+  const _selectedColor =
+    Helpers.getSettingFromLocalStorage(SELECTED_COLOR_KEY) || "#000000";
+  const [mode, setMode] = useState<Mode>(FILL_MODE);
   const [fileTitle, setFileTitle] = useState(() => {
     return Helpers.loadDataFromLocalStorage(PIXEL_NAME_KEY);
   });
@@ -40,14 +45,10 @@ export default function Home() {
   });
   const [grid, setGrid] = useState<Grid>(() => {
     const saved = Helpers.loadDataFromLocalStorage(GRID_KEY);
-    return (
-      saved ??
-      Helpers.createEmptyGrid(defaultGridNum, defaultGridNum, baseColor)
-    );
+    return saved ?? Helpers.createEmptyGrid(defaultGridNum, defaultGridNum);
   });
-  const [selectedColor, setSelectedColor] = useState<string>(() => {
-    return Helpers.getSettingFromLocalStorage(SELECTED_COLOR_KEY) || "#000000";
-  });
+  const [selectedColor, setSelectedColor] = useState<string>(_selectedColor);
+  const [baseColor, setBaseColor] = useState<string>(_baseColor);
   const [gridNumber, setGridNumber] = useState({
     rows: Helpers.getSettingFromLocalStorage(ROWS_KEY) || defaultGridNum,
     cols: Helpers.getSettingFromLocalStorage(COLS_KEY) || defaultGridNum,
@@ -61,12 +62,36 @@ export default function Home() {
     col: number;
   } | null>(null);
 
+  const updateGridCell = ({
+    grid,
+    rowIndex,
+    colIndex,
+    mode,
+    color,
+  }: {
+    grid: Grid;
+    rowIndex: number;
+    colIndex: number;
+    mode: Mode;
+    color: string;
+  }) => {
+    const newGrid = grid.map((row) => [...row]);
+    newGrid[rowIndex][colIndex] = mode === FILL_MODE ? color : "transparent";
+    return newGrid;
+  };
+
   const handleCellClick = (rowIndex: number, colIndex: number) => {
-    const newGrid = [...grid.map((row) => [...row])];
-    newGrid[rowIndex][colIndex] = selectedColor;
-    setGrid(newGrid);
+    const updated = updateGridCell({
+      grid,
+      rowIndex,
+      colIndex,
+      mode,
+      color: selectedColor,
+    });
+
+    setGrid(updated);
     setLastClicked({ row: rowIndex, col: colIndex });
-    Helpers.saveToLocalStorage(GRID_KEY, newGrid);
+    Helpers.saveToLocalStorage(GRID_KEY, updated);
   };
 
   const downloadArt = async () => {
@@ -87,7 +112,7 @@ export default function Home() {
 
       for (let c = 0; c < cols; c++) {
         // Keep existing cell color if it exists, otherwise use default
-        row.push(grid[r]?.[c] ?? baseColor);
+        row.push(grid[r]?.[c] ?? _baseColor);
       }
 
       newGrid.push(row);
@@ -110,8 +135,9 @@ export default function Home() {
     setGridSize(defaultGridSize);
     setRows(defaultGridNum);
     setCols(defaultGridNum);
-    setSelectedColor("#000000");
     setShowGridNum(false);
+    setSelectedColor("#000000");
+    setBaseColor("#ffffff");
 
     setGrid(() => {
       return Helpers.createEmptyGrid(defaultGridNum, defaultGridNum);
@@ -138,14 +164,25 @@ export default function Home() {
       SELECTED_COLOR_KEY,
       value
     );
+    setMode(FILL_MODE);
+  };
+
+  const handleSelectBaseColor = (value: string) => {
+    setBaseColor(value);
+    Helpers.updateSettingsInLocalStorage(
+      GRID_SETTINGS_KEY,
+      BASE_COLOR_KEY,
+      value
+    );
   };
 
   const activateEraser = () => {
-    setSelectedColor(baseColor);
+    setMode(ERASER_MODE);
   };
 
   const activateFiller = () => {
-    setSelectedColor("#000000");
+    setMode(FILL_MODE);
+    setSelectedColor(_selectedColor);
   };
 
   useEffect(() => {
@@ -179,6 +216,8 @@ export default function Home() {
         activateEraser={activateEraser}
         activateFiller={activateFiller}
         mode={mode}
+        baseColor={baseColor}
+        setBaseColor={handleSelectBaseColor}
       />
 
       <div className="bg-white p-1 md:p-3 overflow-x-auto">
@@ -205,21 +244,24 @@ export default function Home() {
                 gridTemplateColumns: `repeat(${
                   grid[0]?.length || 0
                 }, ${gridSize}px)`,
-                background: "white",
+                // background: baseColor,
               }}
             >
               {grid.map((row, rowIndex) =>
-                row.map((color, colIndex) => (
-                  <GridItem
-                    key={`${rowIndex}-${colIndex}`}
-                    rowIndex={rowIndex}
-                    colIndex={colIndex}
-                    gridSize={gridSize}
-                    color={color || baseColor}
-                    handleCellClick={handleCellClick}
-                    lastClicked={lastClicked}
-                  />
-                ))
+                row.map((color, colIndex) => {
+                  return (
+                    <GridItem
+                      key={`${rowIndex}-${colIndex}`}
+                      rowIndex={rowIndex}
+                      colIndex={colIndex}
+                      gridSize={gridSize}
+                      baseColor={baseColor}
+                      color={color || baseColor}
+                      handleCellClick={handleCellClick}
+                      lastClicked={lastClicked}
+                    />
+                  );
+                })
               )}
             </div>
           </div>

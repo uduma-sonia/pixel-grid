@@ -7,6 +7,7 @@ export const ROWS_KEY = "rows";
 export const GRID_SIZE_KEY = "size";
 export const SHOW_GRID_NUM_KEY = "showGridNum";
 export const SELECTED_COLOR_KEY = "selectedColor";
+export const BASE_COLOR_KEY = "baseColor";
 
 export const defaultGridNum = 10;
 export const defaultGridSize = 50;

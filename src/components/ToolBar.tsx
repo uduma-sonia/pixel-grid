@@ -4,35 +4,22 @@ import BasicInput from "./BasicInput";
 import { LuSettings2 } from "react-icons/lu";
 import { useState, useRef, useEffect } from "react";
 import Helpers from "../lib/Helpers";
-import { GRID_SETTINGS_KEY, GRID_SIZE_KEY } from "../lib/constants";
+import {
+  ERASER_MODE,
+  FILL_MODE,
+  GRID_SETTINGS_KEY,
+  GRID_SIZE_KEY,
+} from "../lib/constants";
 import { FaEraser } from "react-icons/fa";
 import { PiPencilSimpleFill } from "react-icons/pi";
 import Mode from "./Mode";
 import { ToolBarProps } from "../types/toolbar";
 
-// type ToolBarProps = {
-//   selectedColor: string;
-//   setSelectedColor: (color: string) => void;
-//   rows: number;
-//   setRows: (value: number) => void;
-//   cols: number;
-//   setCols: (value: number) => void;
-//   handleShowGrid: () => void;
-//   setGridSize: (value: number) => void;
-//   gridSize: number;
-//   createGrid: () => void;
-//   downloadArt: () => void;
-//   resetGrid: () => void;
-//   title: string;
-//   mode: string;
-//   showGridNum: boolean;
-//   activateEraser: () => void;
-//   activateFiller: () => void;
-// };
-
 export default function ToolBar({
   selectedColor,
   setSelectedColor,
+  setBaseColor,
+  baseColor,
   rows,
   setRows,
   cols,
@@ -73,7 +60,7 @@ export default function ToolBar({
       </div>
 
       <div className="flex items-center gap-3">
-        <Mode mode={mode} />
+        <Mode mode={mode} color={selectedColor} />
 
         <div className="relative inline-block">
           <button
@@ -122,15 +109,25 @@ export default function ToolBar({
 
               <div className="mt-4 px-4">
                 <BasicInput
-                  label="Color"
+                  label="Fill Color"
                   type="color"
                   value={selectedColor}
                   onChange={setSelectedColor}
                   className="border border-black rounded-md p-1 w-14 h-7 text-sm bg-white"
                 />
               </div>
+              <div className="mt-4 px-4">
+                <BasicInput
+                  label="Base Color"
+                  type="color"
+                  id="baseColor"
+                  value={baseColor}
+                  onChange={setBaseColor}
+                  className="border border-black rounded-md p-1 w-14 h-7 text-sm bg-white"
+                />
+              </div>
 
-              <div className="checkbox-container px-4 pt-4">
+              <div className="checkbox-container px-4 pt-8">
                 <input
                   type="checkbox"
                   id="html"
@@ -142,10 +139,14 @@ export default function ToolBar({
                 </label>
               </div>
 
-              <div className="px-4 flex items-center gap-4 pt-2">
+              <div className="px-4 flex items-center gap-3 pt-2">
                 <div className="hover-container" data-text="Fill">
                   <button
-                    className="text-black px-1 py-1 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                    style={{
+                      backgroundColor:
+                        mode === FILL_MODE ? "#dcdcdcd4" : "transparent",
+                    }}
+                    className="text-black px-2 py-2 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
                     onClick={activateFiller}
                   >
                     <PiPencilSimpleFill fontSize="24px" />
@@ -153,7 +154,11 @@ export default function ToolBar({
                 </div>
                 <div className="hover-container" data-text="Eraser">
                   <button
-                    className="text-black px-1 py-1 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                    style={{
+                      backgroundColor:
+                        mode === ERASER_MODE ? "#dcdcdcd4" : "transparent",
+                    }}
+                    className="text-black px-2 py-2 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
                     onClick={activateEraser}
                   >
                     <FaEraser fontSize="20px" />

@@ -1,6 +1,8 @@
 export type ToolBarProps = {
   selectedColor: string;
   setSelectedColor: (color: string) => void;
+  baseColor: string;
+  setBaseColor: (color: string) => void;
   rows: number;
   setRows: (value: number) => void;
   cols: number;
@@ -17,3 +19,10 @@ export type ToolBarProps = {
   activateEraser: () => void;
   activateFiller: () => void;
 };
+
+export enum Modes {
+  fill = "fill",
+  erase = "erase",
+}
+
+export type Mode = keyof typeof Modes;
