@@ -4,7 +4,6 @@ import ToolBar from "../components/ToolBar";
 import Helpers from "../lib/Helpers";
 import {
   GRID_SIZE_KEY,
-  // defaultGridSize,
   GRID_KEY,
   GRID_SETTINGS_GENERATOR_KEY,
   FILL_MODE,
@@ -45,35 +44,12 @@ export default function GenerateText() {
       ) || defaultGridSize
     );
   });
-  // const [rows, setRows] = useState<any>(() => {
-  //   return (
-  //     Helpers.getSettingFromLocalStorage(
-  //       ROWS_KEY,
-  //       GRID_SETTINGS_GENERATOR_KEY
-  //     ) || defaultGridNum
-  //   );
-  // });
-  // const [cols, setCols] = useState<any>(() => {
-  //   return (
-  //     Helpers.getSettingFromLocalStorage(
-  //       COLS_KEY,
-  //       GRID_SETTINGS_GENERATOR_KEY
-  //     ) || defaultGridNum
-  //   );
-  // });
 
   const [selectedColor, setSelectedColor] = useState<string>(_selectedColor);
   const [baseColor, setBaseColor] = useState<string>(_baseColor);
   const [text, setText] = useState<string>("");
   const [grid, setGrid] = useState<Grid>([]);
-  // const [grid, setGrid] = useState<Grid>(() => {
-  //   return Helpers.generatePixelText(
-  //     text,
-  //     ALPHABET_MAP,
-  //     selectedColor,
-  //     baseColor
-  //   );
-  // });
+
   const [lastClicked, setLastClicked] = useState<{
     row: number;
     col: number;
@@ -132,56 +108,17 @@ export default function GenerateText() {
     });
   }, [baseColor, selectedColor, text]);
 
-  // const createGrid = () => {
-  //   const newGrid: Grid = [];
-
-  //   for (let r = 0; r < rows; r++) {
-  //     const row: string[] = [];
-
-  //     for (let c = 0; c < cols; c++) {
-  //       // Keep existing cell color if it exists, otherwise use default
-  //       row.push(grid[r]?.[c] ?? _baseColor);
-  //     }
-
-  //     newGrid.push(row);
-  //   }
-
-  //   setGrid(newGrid);
-  //   Helpers.saveToLocalStorage(GRID_KEY, newGrid);
-  //   Helpers.updateSettingsInLocalStorage(
-  //     GRID_SETTINGS_GENERATOR_KEY,
-  //     COLS_KEY,
-  //     cols
-  //   );
-  //   Helpers.updateSettingsInLocalStorage(
-  //     GRID_SETTINGS_GENERATOR_KEY,
-  //     ROWS_KEY,
-  //     rows
-  //   );
-  // };
-
   const resetGrid = () => {
     localStorage.removeItem(GRID_KEY);
     localStorage.removeItem(GRID_SETTINGS_GENERATOR_KEY);
 
     setGridSize(defaultGridSize);
-    // setRows(defaultGridNum);
-    // setCols(defaultGridNum);
-    // setShowGridNum(false);
+
     setSelectedColor("#000000");
     setBaseColor("#ffffff");
 
     setGrid([]);
   };
-
-  // const handleShowGrid = () => {
-  //   setShowGridNum(!showGridNum);
-  //   Helpers.updateSettingsInLocalStorage(
-  //     GRID_SETTINGS_GENERATOR_KEY,
-  //     SHOW_GRID_NUM_KEY,
-  //     !showGridNum
-  //   );
-  // };
 
   const handleSelectColor = useCallback(
     (value: string) => {
@@ -220,27 +157,6 @@ export default function GenerateText() {
     },
     [selectedColor, text]
   );
-
-  // const activateEraser = () => {
-  //   setMode(ERASER_MODE);
-  // };
-
-  // const handleColChange = (value: any) => {
-  //   if (value <= 100) {
-  //     setCols(value);
-  //   }
-  // };
-
-  // const handleRowChange = (value: any) => {
-  //   if (value <= 100) {
-  //     setRows(value);
-  //   }
-  // };
-
-  // const activateFiller = () => {
-  //   setMode(FILL_MODE);
-  //   setSelectedColor(_selectedColor);
-  // };
 
   useEffect(() => {
     const pixelName = Helpers.loadDataFromLocalStorage(PIXEL_GENERATOR_KEY);
