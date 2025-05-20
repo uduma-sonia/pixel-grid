@@ -24,6 +24,7 @@ type ToolBarProps = {
   title: string;
   showGridNum: boolean;
   activateEraser: () => void;
+  activateFiller: () => void;
 };
 
 export default function ToolBar({
@@ -42,6 +43,7 @@ export default function ToolBar({
   showGridNum,
   handleShowGrid,
   activateEraser,
+  activateFiller,
 }: ToolBarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef: any = useRef(null);
@@ -133,13 +135,13 @@ export default function ToolBar({
               </label>
             </div>
 
-            <div className="px-4 flex items-center gap-4">
+            <div className="px-4 flex items-center gap-4 pt-2">
               <div className="hover-container" data-text="Fill">
                 <button
                   className="text-black px-1 py-1 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
-                  onClick={activateEraser}
+                  onClick={activateFiller}
                 >
-                  <PiPencilSimpleFill fontSize="20px" />
+                  <PiPencilSimpleFill fontSize="24px" />
                 </button>
               </div>
               <div className="hover-container" data-text="Eraser">

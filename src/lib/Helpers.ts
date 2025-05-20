@@ -64,6 +64,19 @@ class Helpers {
     }
   }
 
+  static nameGenerator() {
+    const randomPart = (length: number) =>
+      Math.random()
+        .toString(36)
+        .substring(2, 2 + length);
+
+    const part1 = randomPart(3); // e.g., 6yd
+    const part2 = randomPart(4); // e.g., 8udw
+    const part3 = randomPart(3); // e.g., pll
+
+    return `${part1}-${part2}-${part3}`;
+  }
+
   static getAvatarSets() {
     const avatarSets = [
       {

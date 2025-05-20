@@ -1,5 +1,5 @@
 import html2canvas from "html2canvas";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ToolBar from "../components/ToolBar";
 import Helpers from "../lib/Helpers";
 import {
@@ -20,9 +20,11 @@ type Grid = string[][];
 
 export default function Home() {
   const gridRef = useRef(null);
-  const fileTitle = "Powerpuff girls pixel art";
-  const baseColor = "#FFFFFF";
+  const baseColor = "#ffffff";
 
+  const [fileTitle, setFileTitle] = useState(() => {
+    return Helpers.loadDataFromLocalStorage("pixel-name");
+  });
   const [gridSize, setGridSize] = useState(() => {
     return Helpers.getSettingFromLocalStorage(GRID_SIZE_KEY) || defaultGridSize;
   });
@@ -74,7 +76,7 @@ export default function Home() {
 
       for (let c = 0; c < cols; c++) {
         // Keep existing cell color if it exists, otherwise use default
-        row.push(grid[r]?.[c] ?? "#FFFFFF");
+        row.push(grid[r]?.[c] ?? baseColor);
       }
 
       newGrid.push(row);
@@ -120,6 +122,20 @@ export default function Home() {
   const activateEraser = () => {
     setSelectedColor(baseColor);
   };
+  const activateFiller = () => {
+    setSelectedColor("#000000");
+  };
+
+  useEffect(() => {
+    const pixelName = Helpers.loadDataFromLocalStorage("pixel-name");
+    setFileTitle(pixelName);
+
+    if (!pixelName) {
+      const nameGenerated = Helpers.nameGenerator();
+      Helpers.saveToLocalStorage("pixel-name", nameGenerated);
+      setFileTitle(nameGenerated);
+    }
+  }, []);
 
   return (
     <div>
@@ -139,6 +155,7 @@ export default function Home() {
         showGridNum={showGridNum}
         handleShowGrid={handleShowGrid}
         activateEraser={activateEraser}
+        activateFiller={activateFiller}
       />
 
       <div className="bg-white p-1 md:p-3 overflow-x-auto">
@@ -177,7 +194,6 @@ export default function Home() {
                     gridSize={gridSize}
                     color={color || baseColor}
                     handleCellClick={handleCellClick}
-                    // baseColor={baseColor}
                   />
                 ))
               )}
@@ -188,7 +204,3 @@ export default function Home() {
     </div>
   );
 }
-
-// 1. save color picked
-// 3. Undo
-// 4. Improve color picker (save picked colors)
