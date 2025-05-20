@@ -5,6 +5,8 @@ import { LuSettings2 } from "react-icons/lu";
 import { useState, useRef, useEffect } from "react";
 import Helpers from "../lib/Helpers";
 import { GRID_SETTINGS_KEY, GRID_SIZE_KEY } from "../lib/constants";
+import { FaEraser } from "react-icons/fa";
+import { PiPencilSimpleFill } from "react-icons/pi";
 
 type ToolBarProps = {
   selectedColor: string;
@@ -21,6 +23,7 @@ type ToolBarProps = {
   resetGrid: () => void;
   title: string;
   showGridNum: boolean;
+  activateEraser: () => void;
 };
 
 export default function ToolBar({
@@ -38,6 +41,7 @@ export default function ToolBar({
   resetGrid,
   showGridNum,
   handleShowGrid,
+  activateEraser,
 }: ToolBarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef: any = useRef(null);
@@ -57,7 +61,7 @@ export default function ToolBar({
   }, []);
 
   return (
-    <div className="flex shadow-lg mb-0.5 h-16 rounded-b-xl items-center justify-between px-4 sticky top-0 bg-white z-20">
+    <div className="flex shadow-lg mb-0.5 h-16 rounded-b-xl items-center justify-between px-4 sticky top-0 bg-white z-50">
       <div>
         <p className="font-medium text-sm md:text-lg">{title}</p>
       </div>
@@ -127,6 +131,25 @@ export default function ToolBar({
               <label htmlFor="html" className="text-sm font-medium">
                 Show grid number
               </label>
+            </div>
+
+            <div className="px-4 flex items-center gap-4">
+              <div className="hover-container" data-text="Fill">
+                <button
+                  className="text-black px-1 py-1 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                  onClick={activateEraser}
+                >
+                  <PiPencilSimpleFill fontSize="20px" />
+                </button>
+              </div>
+              <div className="hover-container" data-text="Eraser">
+                <button
+                  className="text-black px-1 py-1 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                  onClick={activateEraser}
+                >
+                  <FaEraser fontSize="20px" />
+                </button>
+              </div>
             </div>
 
             <div className="flex mt-10 gap-3 px-4">

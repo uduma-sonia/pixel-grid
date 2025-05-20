@@ -109,3 +109,36 @@ hr {
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+
+.hover-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.hover-container::before {
+  content: attr(data-text);
+  position: absolute;
+  background-color: #000000;
+  width: fit-content;
+  color: #ffffff;
+  padding: 0.4rem 0.6rem;
+  top: -70%;
+  left: 0;
+  right: 0;
+  font-size: 13px;
+  opacity: 0;
+  font-weight: 500;
+  border-radius: 12px;
+  transform: translateY(20%);
+  transition: all 0.3s ease-in-out;
+  /* transition-delay: 400ms; */
+}
+
+.hover-container[data-text]:not([data-text=""])::before {
+  opacity: 0;
+}
+
+.hover-container[data-text]:not([data-text=""]):hover::before {
+  opacity: 1;
+  transform: translateY(-40%);
+}

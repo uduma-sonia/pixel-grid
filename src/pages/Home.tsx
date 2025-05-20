@@ -21,6 +21,7 @@ type Grid = string[][];
 export default function Home() {
   const gridRef = useRef(null);
   const fileTitle = "Powerpuff girls pixel art";
+  const baseColor = "#FFFFFF";
 
   const [gridSize, setGridSize] = useState(() => {
     return Helpers.getSettingFromLocalStorage(GRID_SIZE_KEY) || defaultGridSize;
@@ -33,7 +34,10 @@ export default function Home() {
   });
   const [grid, setGrid] = useState<Grid>(() => {
     const saved = Helpers.loadDataFromLocalStorage(GRID_KEY);
-    return saved ?? Helpers.createEmptyGrid(defaultGridNum, defaultGridNum);
+    return (
+      saved ??
+      Helpers.createEmptyGrid(defaultGridNum, defaultGridNum, baseColor)
+    );
   });
   const [selectedColor, setSelectedColor] = useState<string>("#000000");
   const [gridNumber, setGridNumber] = useState({
@@ -113,6 +117,10 @@ export default function Home() {
     );
   };
 
+  const activateEraser = () => {
+    setSelectedColor(baseColor);
+  };
+
   return (
     <div>
       <ToolBar
@@ -130,21 +138,15 @@ export default function Home() {
         gridSize={gridSize}
         showGridNum={showGridNum}
         handleShowGrid={handleShowGrid}
+        activateEraser={activateEraser}
       />
 
       <div className="bg-white p-1 md:p-3 overflow-x-auto">
         {grid?.length > 0 && (
           <div
-            ref={gridRef}
-            className={`grid gap-0 w-fit overflow-x-auto mx-auto relative ${
+            className={`relative max-w-fit mx-auto ${
               showGridNum ? "pl-9 pt-9" : "pl-3 pt-3"
             } `}
-            style={{
-              gridTemplateColumns: `repeat(${
-                grid[0]?.length || 0
-              }, ${gridSize}px)`,
-              background: "#ffffff",
-            }}
           >
             {showGridNum && (
               <>
@@ -156,18 +158,30 @@ export default function Home() {
               </>
             )}
 
-            {grid.map((row, rowIndex) =>
-              row.map((color, colIndex) => (
-                <GridItem
-                  key={`${rowIndex}-${colIndex}`}
-                  rowIndex={rowIndex}
-                  colIndex={colIndex}
-                  gridSize={gridSize}
-                  color={color}
-                  handleCellClick={handleCellClick}
-                />
-              ))
-            )}
+            <div
+              ref={gridRef}
+              className={`grid gap-0 w-fit overflow-x-auto mx-auto`}
+              style={{
+                gridTemplateColumns: `repeat(${
+                  grid[0]?.length || 0
+                }, ${gridSize}px)`,
+                background: "white",
+              }}
+            >
+              {grid.map((row, rowIndex) =>
+                row.map((color, colIndex) => (
+                  <GridItem
+                    key={`${rowIndex}-${colIndex}`}
+                    rowIndex={rowIndex}
+                    colIndex={colIndex}
+                    gridSize={gridSize}
+                    color={color || baseColor}
+                    handleCellClick={handleCellClick}
+                    // baseColor={baseColor}
+                  />
+                ))
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -175,7 +189,6 @@ export default function Home() {
   );
 }
 
-// 1. show grid number
-// 2. Eraser
+// 1. save color picked
 // 3. Undo
 // 4. Improve color picker (save picked colors)
