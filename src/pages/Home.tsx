@@ -204,3 +204,8 @@ export default function Home() {
     </div>
   );
 }
+
+// 1. set base style
+// 2. record last 5 selected color
+// 3. set divider lines
+// 4. drag over squares to fill color
