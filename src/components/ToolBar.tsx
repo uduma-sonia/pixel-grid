@@ -7,25 +7,28 @@ import Helpers from "../lib/Helpers";
 import { GRID_SETTINGS_KEY, GRID_SIZE_KEY } from "../lib/constants";
 import { FaEraser } from "react-icons/fa";
 import { PiPencilSimpleFill } from "react-icons/pi";
+import Mode from "./Mode";
+import { ToolBarProps } from "../types/toolbar";
 
-type ToolBarProps = {
-  selectedColor: string;
-  setSelectedColor: (color: string) => void;
-  rows: number;
-  setRows: (value: number) => void;
-  cols: number;
-  setCols: (value: number) => void;
-  handleShowGrid: () => void;
-  setGridSize: (value: number) => void;
-  gridSize: number;
-  createGrid: () => void;
-  downloadArt: () => void;
-  resetGrid: () => void;
-  title: string;
-  showGridNum: boolean;
-  activateEraser: () => void;
-  activateFiller: () => void;
-};
+// type ToolBarProps = {
+//   selectedColor: string;
+//   setSelectedColor: (color: string) => void;
+//   rows: number;
+//   setRows: (value: number) => void;
+//   cols: number;
+//   setCols: (value: number) => void;
+//   handleShowGrid: () => void;
+//   setGridSize: (value: number) => void;
+//   gridSize: number;
+//   createGrid: () => void;
+//   downloadArt: () => void;
+//   resetGrid: () => void;
+//   title: string;
+//   mode: string;
+//   showGridNum: boolean;
+//   activateEraser: () => void;
+//   activateFiller: () => void;
+// };
 
 export default function ToolBar({
   selectedColor,
@@ -44,6 +47,7 @@ export default function ToolBar({
   handleShowGrid,
   activateEraser,
   activateFiller,
+  mode,
 }: ToolBarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef: any = useRef(null);
@@ -68,111 +72,115 @@ export default function ToolBar({
         <p className="font-medium text-sm md:text-lg">{title}</p>
       </div>
 
-      <div className="relative inline-block">
-        <button
-          className="text-black px-3 py-1 rounded-lg border border-black"
-          onClick={() => setIsOpen((prev) => !prev)}
-        >
-          <LuSettings2 fontSize="24px" />
-        </button>
+      <div className="flex items-center gap-3">
+        <Mode mode={mode} />
 
-        {isOpen && (
-          <div
-            ref={menuRef}
-            className="absolute top-[50px] -right-3 bg-white rounded-xl border z-50 shadow-lg w-[300px] px- py-5"
+        <div className="relative inline-block">
+          <button
+            className="text-black px-3 py-1 rounded-lg border border-black"
+            onClick={() => setIsOpen((prev) => !prev)}
           >
-            <div className="px-4 mb-3">
-              <BasicInput
-                label="Size"
-                value={gridSize}
-                onChange={setGridSize}
-                onDebouncedChange={(val) => {
-                  Helpers.updateSettingsInLocalStorage(
-                    GRID_SETTINGS_KEY,
-                    GRID_SIZE_KEY,
-                    val
-                  );
-                }}
-              />
-            </div>
+            <LuSettings2 fontSize="24px" />
+          </button>
 
-            <hr />
-            <div className="my-3 px-4">
-              <div className="flex gap-3 mb-2">
-                <BasicInput label="Rows" value={rows} onChange={setRows} />
-                <BasicInput label="Cols" value={cols} onChange={setCols} />
+          {isOpen && (
+            <div
+              ref={menuRef}
+              className="absolute top-[50px] -right-3 bg-white rounded-xl border z-50 shadow-lg w-[300px] px- py-5"
+            >
+              <div className="px-4 mb-3">
+                <BasicInput
+                  label="Size"
+                  value={gridSize}
+                  onChange={setGridSize}
+                  onDebouncedChange={(val) => {
+                    Helpers.updateSettingsInLocalStorage(
+                      GRID_SETTINGS_KEY,
+                      GRID_SIZE_KEY,
+                      val
+                    );
+                  }}
+                />
               </div>
 
-              <button
-                className="text-white px-3 py-2 w-full rounded-lg text-sm flex items-center gap-1 bg-brand-color"
-                onClick={createGrid}
-              >
-                Generate grid
-              </button>
-            </div>
+              <hr />
+              <div className="my-3 px-4">
+                <div className="flex gap-3 mb-2">
+                  <BasicInput label="Rows" value={rows} onChange={setRows} />
+                  <BasicInput label="Cols" value={cols} onChange={setCols} />
+                </div>
 
-            <hr />
-
-            <div className="mt-4 px-4">
-              <BasicInput
-                label="Color"
-                type="color"
-                value={selectedColor}
-                onChange={setSelectedColor}
-                className="border border-black rounded-md p-1 w-14 h-7 text-sm bg-white"
-              />
-            </div>
-
-            <div className="checkbox-container px-4 pt-4">
-              <input
-                type="checkbox"
-                id="html"
-                checked={showGridNum}
-                onChange={handleShowGrid}
-              />
-              <label htmlFor="html" className="text-sm font-medium">
-                Show grid number
-              </label>
-            </div>
-
-            <div className="px-4 flex items-center gap-4 pt-2">
-              <div className="hover-container" data-text="Fill">
                 <button
-                  className="text-black px-1 py-1 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
-                  onClick={activateFiller}
+                  className="text-white px-3 py-2 w-full rounded-lg text-sm flex items-center gap-1 bg-brand-color"
+                  onClick={createGrid}
                 >
-                  <PiPencilSimpleFill fontSize="24px" />
+                  Generate grid
                 </button>
               </div>
-              <div className="hover-container" data-text="Eraser">
+
+              <hr />
+
+              <div className="mt-4 px-4">
+                <BasicInput
+                  label="Color"
+                  type="color"
+                  value={selectedColor}
+                  onChange={setSelectedColor}
+                  className="border border-black rounded-md p-1 w-14 h-7 text-sm bg-white"
+                />
+              </div>
+
+              <div className="checkbox-container px-4 pt-4">
+                <input
+                  type="checkbox"
+                  id="html"
+                  checked={showGridNum}
+                  onChange={handleShowGrid}
+                />
+                <label htmlFor="html" className="text-sm font-medium">
+                  Show grid number
+                </label>
+              </div>
+
+              <div className="px-4 flex items-center gap-4 pt-2">
+                <div className="hover-container" data-text="Fill">
+                  <button
+                    className="text-black px-1 py-1 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                    onClick={activateFiller}
+                  >
+                    <PiPencilSimpleFill fontSize="24px" />
+                  </button>
+                </div>
+                <div className="hover-container" data-text="Eraser">
+                  <button
+                    className="text-black px-1 py-1 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                    onClick={activateEraser}
+                  >
+                    <FaEraser fontSize="20px" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex mt-10 gap-3 px-4">
                 <button
-                  className="text-black px-1 py-1 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
-                  onClick={activateEraser}
+                  className="text-white px-3 py-2 rounded-lg text-sm w-full flex justify-center items-center gap-1 bg-brand-color"
+                  onClick={resetGrid}
                 >
-                  <FaEraser fontSize="20px" />
+                  Reset
+                  <GrPowerReset fontSize="14px" />
+                </button>
+
+                <button
+                  className="text-white px-3 py-2 rounded-lg text-sm w-full flex justify-center items-center gap-1 bg-brand-color"
+                  onClick={downloadArt}
+                >
+                  Save
+                  <AiFillSave fontSize="16px" />
                 </button>
               </div>
             </div>
-
-            <div className="flex mt-10 gap-3 px-4">
-              <button
-                className="text-white px-3 py-2 rounded-lg text-sm w-full flex justify-center items-center gap-1 bg-brand-color"
-                onClick={resetGrid}
-              >
-                Reset
-                <GrPowerReset fontSize="14px" />
-              </button>
-
-              <button
-                className="text-white px-3 py-2 rounded-lg text-sm w-full flex justify-center items-center gap-1 bg-brand-color"
-                onClick={downloadArt}
-              >
-                Save
-                <AiFillSave fontSize="16px" />
-              </button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

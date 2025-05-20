@@ -11,6 +11,9 @@ import {
   GRID_KEY,
   GRID_SETTINGS_KEY,
   SHOW_GRID_NUM_KEY,
+  FILL_MODE,
+  PIXEL_NAME_KEY,
+  SELECTED_COLOR_KEY,
 } from "../lib/constants";
 import GridItem from "../components/GridItem";
 import GridTopMarker from "../components/GridTopMarker";
@@ -22,8 +25,9 @@ export default function Home() {
   const gridRef = useRef(null);
   const baseColor = "#ffffff";
 
+  const [mode, setMode] = useState(FILL_MODE);
   const [fileTitle, setFileTitle] = useState(() => {
-    return Helpers.loadDataFromLocalStorage("pixel-name");
+    return Helpers.loadDataFromLocalStorage(PIXEL_NAME_KEY);
   });
   const [gridSize, setGridSize] = useState(() => {
     return Helpers.getSettingFromLocalStorage(GRID_SIZE_KEY) || defaultGridSize;
@@ -41,7 +45,9 @@ export default function Home() {
       Helpers.createEmptyGrid(defaultGridNum, defaultGridNum, baseColor)
     );
   });
-  const [selectedColor, setSelectedColor] = useState<string>("#000000");
+  const [selectedColor, setSelectedColor] = useState<string>(() => {
+    return Helpers.getSettingFromLocalStorage(SELECTED_COLOR_KEY) || "#000000";
+  });
   const [gridNumber, setGridNumber] = useState({
     rows: Helpers.getSettingFromLocalStorage(ROWS_KEY) || defaultGridNum,
     cols: Helpers.getSettingFromLocalStorage(COLS_KEY) || defaultGridNum,
@@ -125,20 +131,30 @@ export default function Home() {
     );
   };
 
+  const handleSelectColor = (value: string) => {
+    setSelectedColor(value);
+    Helpers.updateSettingsInLocalStorage(
+      GRID_SETTINGS_KEY,
+      SELECTED_COLOR_KEY,
+      value
+    );
+  };
+
   const activateEraser = () => {
     setSelectedColor(baseColor);
   };
+
   const activateFiller = () => {
     setSelectedColor("#000000");
   };
 
   useEffect(() => {
-    const pixelName = Helpers.loadDataFromLocalStorage("pixel-name");
+    const pixelName = Helpers.loadDataFromLocalStorage(PIXEL_NAME_KEY);
     setFileTitle(pixelName);
 
     if (!pixelName) {
       const nameGenerated = Helpers.nameGenerator();
-      Helpers.saveToLocalStorage("pixel-name", nameGenerated);
+      Helpers.saveToLocalStorage(PIXEL_NAME_KEY, nameGenerated);
       setFileTitle(nameGenerated);
     }
   }, []);
@@ -148,7 +164,7 @@ export default function Home() {
       <ToolBar
         title={fileTitle}
         selectedColor={selectedColor}
-        setSelectedColor={setSelectedColor}
+        setSelectedColor={handleSelectColor}
         rows={rows}
         setRows={setRows}
         cols={cols}
@@ -162,6 +178,7 @@ export default function Home() {
         handleShowGrid={handleShowGrid}
         activateEraser={activateEraser}
         activateFiller={activateFiller}
+        mode={mode}
       />
 
       <div className="bg-white p-1 md:p-3 overflow-x-auto">
