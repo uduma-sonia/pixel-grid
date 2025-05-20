@@ -1,4 +1,4 @@
-import { ALPHABET_MAP, GRID_SETTINGS_KEY } from "./constants";
+import { ALPHABET_MAP, GRID_SETTINGS_KEY, PIXEL_AVATAR_KEY } from "./constants";
 
 type Settings = {
   [key: string]: any;
@@ -45,8 +45,11 @@ class Helpers {
     }
   }
 
-  static getSettingFromLocalStorage(settingsKey: string): any | null {
-    const storeKey = GRID_SETTINGS_KEY;
+  static getSettingFromLocalStorage(
+    settingsKey: string,
+    localKey?: string
+  ): any | null {
+    const storeKey = localKey || GRID_SETTINGS_KEY;
     try {
       const existing = localStorage.getItem(storeKey);
 
@@ -113,9 +116,9 @@ class Helpers {
   static generatePixelText(
     text: string,
     alphabetMap = ALPHABET_MAP,
-    onColor = "#000000",
-    spacing = 1,
-    offColor = "#FFFFFF"
+    onColor = "#00a15d",
+    offColor = "#FFF66F",
+    spacing = 1
   ) {
     const chars = text.toUpperCase().split("");
     const sample = alphabetMap["A"];
@@ -166,6 +169,22 @@ class Helpers {
 
     return paddedGrid;
   }
+
+  static generateRandomNumber(length: number) {
+    return Math.random().toString(16).substring(2, length);
+  }
+
+  static getAvatar = () => {
+    const existing = localStorage.getItem("pixel-avatar");
+
+    if (existing) {
+      return `https://robohash.org/${existing}?size=200x200`;
+    }
+
+    const randomNumbers = this.generateRandomNumber(5);
+    this.saveToLocalStorage(PIXEL_AVATAR_KEY, randomNumbers);
+    return `https://robohash.org/${randomNumbers}?size=200x200`;
+  };
 }
 
 export default Helpers;

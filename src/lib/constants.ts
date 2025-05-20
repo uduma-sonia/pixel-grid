@@ -1,6 +1,9 @@
 export const GRID_KEY = "pixel-art-grid";
 export const GRID_SETTINGS_KEY = "pixel-grid-settings";
+export const GRID_SETTINGS_GENERATOR_KEY = "grid-generator-settings";
 export const PIXEL_NAME_KEY = "pixel-name";
+export const PIXEL_GENERATOR_KEY = "pixel-generator";
+export const PIXEL_AVATAR_KEY = "pixel-avatar";
 
 export const COLS_KEY = "cols";
 export const ROWS_KEY = "rows";

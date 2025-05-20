@@ -7,6 +7,7 @@ import Helpers from "../lib/Helpers";
 import {
   ERASER_MODE,
   FILL_MODE,
+  GRID_SETTINGS_GENERATOR_KEY,
   GRID_SETTINGS_KEY,
   GRID_SIZE_KEY,
 } from "../lib/constants";
@@ -15,6 +16,7 @@ import { PiPencilSimpleFill } from "react-icons/pi";
 import Mode from "./Mode";
 import { ToolBarProps } from "../types/toolbar";
 import { TbExternalLink } from "react-icons/tb";
+import Avatar from "./Avatar";
 
 export default function ToolBar({
   selectedColor,
@@ -36,9 +38,14 @@ export default function ToolBar({
   activateEraser,
   activateFiller,
   mode,
+  type = "create",
 }: ToolBarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef: any = useRef(null);
+  const avatar = Helpers.getAvatar();
+
+  const SETTINGS_KEY =
+    type === "generate" ? GRID_SETTINGS_GENERATOR_KEY : GRID_SETTINGS_KEY;
 
   // Close menu on outside click
   useEffect(() => {
@@ -54,19 +61,42 @@ export default function ToolBar({
     };
   }, []);
 
-  return (
-    <div className="flex shadow-lg mb-0.5 h-16 rounded-b-xl items-center justify-between px-4 sticky top-0 bg-white z-50">
-      <div className="flex item gap-6">
-        <p className="font-medium text-sm md:text-lg">{title}</p>
-
+  const barLinks = () => {
+    if (type === "create") {
+      return (
         <a
           href="/generate-text"
           target="_blank"
-          className="inline-flex items-center gap-1 hover:underline text-sm font-medium leading-8"
+          className="inline-flex items-center gap-1 hover:underline text-sm font-medium"
         >
           Generate text
           <TbExternalLink />
         </a>
+      );
+    } else if (type === "generate") {
+      return (
+        <a
+          href="/"
+          target="_blank"
+          className="inline-flex items-center gap-1 hover:underline text-sm font-medium"
+        >
+          Create art
+          <TbExternalLink />
+        </a>
+      );
+    }
+
+    return "";
+  };
+
+  return (
+    <div className="flex shadow-lg mb-0.5 h-16 rounded-b-xl items-center justify-between px-4 sticky top-0 bg-white z-50">
+      <div className="flex items-center">
+        <Avatar avatar={avatar} selectedColor={selectedColor} />
+
+        <p className="font-medium text-sm md:text-lg mr-6 ml-2">{title}</p>
+
+        {barLinks()}
       </div>
 
       <div className="flex items-center gap-3">
@@ -92,7 +122,7 @@ export default function ToolBar({
                   onChange={setGridSize}
                   onDebouncedChange={(val) => {
                     Helpers.updateSettingsInLocalStorage(
-                      GRID_SETTINGS_KEY,
+                      SETTINGS_KEY,
                       GRID_SIZE_KEY,
                       val
                     );
@@ -100,20 +130,33 @@ export default function ToolBar({
                 />
               </div>
 
-              <hr />
-              <div className="my-3 px-4">
-                <div className="flex gap-3 mb-2">
-                  <BasicInput label="Rows" value={rows} onChange={setRows} />
-                  <BasicInput label="Cols" value={cols} onChange={setCols} />
-                </div>
+              {type === "create" && (
+                <>
+                  <hr />
 
-                <button
-                  className="text-white px-3 py-2 w-full rounded-lg text-sm flex items-center gap-1 bg-brand-color"
-                  onClick={createGrid}
-                >
-                  Generate grid
-                </button>
-              </div>
+                  <div className="my-3 px-4">
+                    <div className="flex gap-3 mb-2">
+                      <BasicInput
+                        label="Rows"
+                        value={rows}
+                        onChange={setRows}
+                      />
+                      <BasicInput
+                        label="Cols"
+                        value={cols}
+                        onChange={setCols}
+                      />
+                    </div>
+
+                    <button
+                      className="text-white px-3 py-2 w-full rounded-lg text-sm flex items-center gap-1 bg-brand-color"
+                      onClick={createGrid}
+                    >
+                      Generate grid
+                    </button>
+                  </div>
+                </>
+              )}
 
               <hr />
 
@@ -137,44 +180,48 @@ export default function ToolBar({
                 />
               </div>
 
-              <div className="checkbox-container px-4 pt-8">
-                <input
-                  type="checkbox"
-                  id="html"
-                  checked={showGridNum}
-                  onChange={handleShowGrid}
-                />
-                <label htmlFor="html" className="text-sm font-medium">
-                  Show grid number
-                </label>
-              </div>
+              {type === "create" && (
+                <>
+                  <div className="checkbox-container px-4 pt-8">
+                    <input
+                      type="checkbox"
+                      id="html"
+                      checked={showGridNum}
+                      onChange={handleShowGrid}
+                    />
+                    <label htmlFor="html" className="text-sm font-medium">
+                      Show grid number
+                    </label>
+                  </div>
 
-              <div className="px-4 flex items-center gap-3 pt-2">
-                <div className="hover-container" data-text="Fill">
-                  <button
-                    style={{
-                      backgroundColor:
-                        mode === FILL_MODE ? "#dcdcdcd4" : "transparent",
-                    }}
-                    className="text-black px-2 py-1.5 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
-                    onClick={activateFiller}
-                  >
-                    <PiPencilSimpleFill fontSize="24px" />
-                  </button>
-                </div>
-                <div className="hover-container" data-text="Eraser">
-                  <button
-                    style={{
-                      backgroundColor:
-                        mode === ERASER_MODE ? "#dcdcdcd4" : "transparent",
-                    }}
-                    className="text-black px-2 py-1.5 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
-                    onClick={activateEraser}
-                  >
-                    <FaEraser fontSize="20px" />
-                  </button>
-                </div>
-              </div>
+                  <div className="px-4 flex items-center gap-3 pt-2">
+                    <div className="hover-container" data-text="Fill">
+                      <button
+                        style={{
+                          backgroundColor:
+                            mode === FILL_MODE ? "#dcdcdcd4" : "transparent",
+                        }}
+                        className="text-black px-2 py-1.5 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                        onClick={activateFiller}
+                      >
+                        <PiPencilSimpleFill fontSize="24px" />
+                      </button>
+                    </div>
+                    <div className="hover-container" data-text="Eraser">
+                      <button
+                        style={{
+                          backgroundColor:
+                            mode === ERASER_MODE ? "#dcdcdcd4" : "transparent",
+                        }}
+                        className="text-black px-2 py-1.5 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                        onClick={activateEraser}
+                      >
+                        <FaEraser fontSize="20px" />
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div className="flex mt-10 gap-3 px-4">
                 <button
