@@ -180,6 +180,18 @@ export default function Home() {
     setMode(ERASER_MODE);
   };
 
+  const handleColChange = (value: any) => {
+    if (value <= 100) {
+      setCols(value);
+    }
+  };
+
+  const handleRowChange = (value: any) => {
+    if (value <= 100) {
+      setRows(value);
+    }
+  };
+
   const activateFiller = () => {
     setMode(FILL_MODE);
     setSelectedColor(_selectedColor);
@@ -203,9 +215,9 @@ export default function Home() {
         selectedColor={selectedColor}
         setSelectedColor={handleSelectColor}
         rows={rows}
-        setRows={setRows}
+        setRows={handleRowChange}
         cols={cols}
-        setCols={setCols}
+        setCols={handleColChange}
         createGrid={createGrid}
         downloadArt={downloadArt}
         resetGrid={resetGrid}
@@ -244,7 +256,6 @@ export default function Home() {
                 gridTemplateColumns: `repeat(${
                   grid[0]?.length || 0
                 }, ${gridSize}px)`,
-                // background: baseColor,
               }}
             >
               {grid.map((row, rowIndex) =>
@@ -271,12 +282,11 @@ export default function Home() {
   );
 }
 
-// 1. set base style
 // 2. record last 5 selected color
 // 3. set divider lines
 // 4. drag over squares to fill color
-// 5. drag iver squares to erase
-// 6. indicate mode in title bar
+// 5. drag over squares to erase
 // 7. save numerous files
-// 8. set max number for rows and cols
+// 8. tell users they cannot set more than 100 rows or cols
 // 9. Fit screen / fullscreen
+// 10. fix top grid marker on overflowing screen

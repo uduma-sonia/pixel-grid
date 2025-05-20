@@ -146,7 +146,7 @@ export default function ToolBar({
                       backgroundColor:
                         mode === FILL_MODE ? "#dcdcdcd4" : "transparent",
                     }}
-                    className="text-black px-2 py-2 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                    className="text-black px-2 py-1.5 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
                     onClick={activateFiller}
                   >
                     <PiPencilSimpleFill fontSize="24px" />
@@ -158,7 +158,7 @@ export default function ToolBar({
                       backgroundColor:
                         mode === ERASER_MODE ? "#dcdcdcd4" : "transparent",
                     }}
-                    className="text-black px-2 py-2 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
+                    className="text-black px-2 py-1.5 rounded-lg hover:bg-[#dcdcdcd4] cursor-pointer"
                     onClick={activateEraser}
                   >
                     <FaEraser fontSize="20px" />
