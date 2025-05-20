@@ -50,11 +50,16 @@ export default function Home() {
   const [showGridNum, setShowGridNum] = useState(
     Helpers.getSettingFromLocalStorage(SHOW_GRID_NUM_KEY) || false
   );
+  const [lastClicked, setLastClicked] = useState<{
+    row: number;
+    col: number;
+  } | null>(null);
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
     const newGrid = [...grid.map((row) => [...row])];
     newGrid[rowIndex][colIndex] = selectedColor;
     setGrid(newGrid);
+    setLastClicked({ row: rowIndex, col: colIndex });
     Helpers.saveToLocalStorage(GRID_KEY, newGrid);
   };
 
@@ -100,6 +105,7 @@ export default function Home() {
     setRows(defaultGridNum);
     setCols(defaultGridNum);
     setSelectedColor("#000000");
+    setShowGridNum(false);
 
     setGrid(() => {
       return Helpers.createEmptyGrid(defaultGridNum, defaultGridNum);
@@ -194,6 +200,7 @@ export default function Home() {
                     gridSize={gridSize}
                     color={color || baseColor}
                     handleCellClick={handleCellClick}
+                    lastClicked={lastClicked}
                   />
                 ))
               )}
@@ -209,3 +216,8 @@ export default function Home() {
 // 2. record last 5 selected color
 // 3. set divider lines
 // 4. drag over squares to fill color
+// 5. drag iver squares to erase
+// 6. indicate mode in title bar
+// 7. save numerous files
+// 8. set max number for rows and cols
+// 9. Fit screen / fullscreen

@@ -85,6 +85,7 @@ hr {
 .checkbox-container label:before {
   content: "";
   -webkit-appearance: none;
+  appearance: none;
   background-color: transparent;
   border: 2px solid #4b6e01;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05),
@@ -131,7 +132,6 @@ hr {
   border-radius: 12px;
   transform: translateY(20%);
   transition: all 0.3s ease-in-out;
-  /* transition-delay: 400ms; */
 }
 
 .hover-container[data-text]:not([data-text=""])::before {
@@ -141,4 +141,21 @@ hr {
 .hover-container[data-text]:not([data-text=""]):hover::before {
   opacity: 1;
   transform: translateY(-40%);
+}
+
+@layer utilities {
+  .animate-pop {
+    animation: popIn 0.3s ease-in-out;
+  }
+
+  @keyframes popIn {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
 }
