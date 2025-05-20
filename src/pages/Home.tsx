@@ -43,6 +43,13 @@ export default function Home() {
   const [cols, setCols] = useState<any>(() => {
     return Helpers.getSettingFromLocalStorage(COLS_KEY) || defaultGridNum;
   });
+  // const [grid, setGrid] = useState<Grid>(() => {
+  //   return Helpers.generatePixelText(
+  //     "0123456789 sonia",
+  //     ALPHABET_MAP,
+  //     "#000000"
+  //   );
+  // });
   const [grid, setGrid] = useState<Grid>(() => {
     const saved = Helpers.loadDataFromLocalStorage(GRID_KEY);
     return saved ?? Helpers.createEmptyGrid(defaultGridNum, defaultGridNum);

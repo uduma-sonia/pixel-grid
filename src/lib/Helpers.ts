@@ -1,4 +1,4 @@
-import { GRID_SETTINGS_KEY } from "./constants";
+import { ALPHABET_MAP, GRID_SETTINGS_KEY } from "./constants";
 
 type Settings = {
   [key: string]: any;
@@ -110,10 +110,62 @@ class Helpers {
     return avatarSets;
   }
 
-  // const getAvatars = getAvatarSets().map((item) => {
-  //   const randomNumbers = HelperUtils.generateRandomNumber(5);
-  //   return `https://robohash.org/${randomNumbers}?set=${item.id}&size=200x200`;
-  // });
+  static generatePixelText(
+    text: string,
+    alphabetMap = ALPHABET_MAP,
+    onColor = "#000000",
+    spacing = 1,
+    offColor = "#FFFFFF"
+  ) {
+    const chars = text.toUpperCase().split("");
+    const sample = alphabetMap["A"];
+    const rowCount = sample.length;
+
+    // Step 1: Build grid without padding
+    const grid: string[][] = Array.from({ length: rowCount }, () => []);
+
+    chars.forEach((char, i) => {
+      if (char === " ") {
+        // Add 3-pixel space between words
+        grid.forEach((row) => row.push(...Array(3).fill(offColor)));
+        return;
+      }
+
+      const pattern = alphabetMap[char] ?? alphabetMap[" "];
+
+      pattern.forEach((rowStr, rowIdx) => {
+        const row = rowStr
+          .split("")
+          .map((bit) => (bit === "1" ? onColor : offColor));
+        grid[rowIdx].push(...row);
+      });
+
+      const nextChar = chars[i + 1];
+
+      // Add spacing between characters (but not before or after space)
+      if (nextChar && nextChar !== " ") {
+        grid.forEach((row) => row.push(...Array(spacing).fill(offColor)));
+      }
+    });
+
+    // Step 2: Add 1-pixel white padding around the text
+    const paddedGrid: string[][] = [];
+
+    const paddedRowLength = grid[0].length + 2;
+
+    // Top padding
+    paddedGrid.push(Array(paddedRowLength).fill(offColor));
+
+    // Middle rows with left/right padding
+    grid.forEach((row) => {
+      paddedGrid.push([offColor, ...row, offColor]);
+    });
+
+    // Bottom padding
+    paddedGrid.push(Array(paddedRowLength).fill(offColor));
+
+    return paddedGrid;
+  }
 }
 
 export default Helpers;
