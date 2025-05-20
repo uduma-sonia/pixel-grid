@@ -1,11 +1,18 @@
 import "./App.css";
-import { Home } from "./pages";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import { Home, GenerateText } from "./pages";
 
 function App() {
   return (
-    <>
-      <Home />
-    </>
+    <BrowserRouter>
+      {/* <Home /> */}
+
+      <Routes>
+        <Route path={"/"} element={<Home />} />
+        <Route path={"/generate-text"} element={<GenerateText />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

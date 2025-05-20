@@ -14,7 +14,7 @@ import { FaEraser } from "react-icons/fa";
 import { PiPencilSimpleFill } from "react-icons/pi";
 import Mode from "./Mode";
 import { ToolBarProps } from "../types/toolbar";
-import { IoIosArrowDown } from "react-icons/io";
+import { TbExternalLink } from "react-icons/tb";
 
 export default function ToolBar({
   selectedColor,
@@ -56,15 +56,17 @@ export default function ToolBar({
 
   return (
     <div className="flex shadow-lg mb-0.5 h-16 rounded-b-xl items-center justify-between px-4 sticky top-0 bg-white z-50">
-      <div className="flex item gap-3">
+      <div className="flex item gap-6">
         <p className="font-medium text-sm md:text-lg">{title}</p>
 
-        <div>
-          <button className="text-sm px-2 py-1 rounded-lg border border-black flex gap-3 items-center">
-            Generate text
-            <IoIosArrowDown />
-          </button>
-        </div>
+        <a
+          href="/generate-text"
+          target="_blank"
+          className="inline-flex items-center gap-1 hover:underline text-sm font-medium leading-8"
+        >
+          Generate text
+          <TbExternalLink />
+        </a>
       </div>
 
       <div className="flex items-center gap-3">
